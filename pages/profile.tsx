@@ -88,28 +88,28 @@ function Home(/*{ user, error }*/) {
   );
 }
 
-export async function getServerSideProps(context) {
-  try {
-    const { data: user } = await axios.post("http://localhost:3000/api/login", {
-      username: "-------",
-      password: "-------",
-    });
+// export async function getServerSideProps(context) {
+//   try {
+//     const { data: user } = await axios.post("http://localhost:3000/api/login", {
+//       username: "-------",
+//       password: "-------",
+//     });
 
-    console.log("Dataaaaa: ", user);
+//     console.log("Dataaaaa: ", user);
 
-    return {
-      props: {
-        user,
-      },
-    };
-  } catch (error) {
-    console.log("getServerSideProps-error: ", error.message);
-    return {
-      props: {
-        error: error.message,
-      },
-    };
-  }
-}
+//     return {
+//       props: {
+//         user,
+//       },
+//     };
+//   } catch (error) {
+//     console.log("getServerSideProps-error: ", error.message);
+//     return {
+//       props: {
+//         error: error.message,
+//       },
+//     };
+//   }
+// }
 
 export default Home;
