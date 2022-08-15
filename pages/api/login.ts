@@ -12,7 +12,6 @@ const login = async (req: NextApiRequest, res) => {
 
   const userInfo = await AuthClient.Player.GetUserInfo();
   const puuid = userInfo.data.sub;
-  console.log(userInfo.data);
 
   const name = userInfo.data.acct.game_name;
   const tag = userInfo.data.acct.tag_line;
@@ -26,16 +25,38 @@ const login = async (req: NextApiRequest, res) => {
     return;
   }
 
-  const { SingleItemOffers }: { SingleItemOffers: string[] } =
-    storeFront.data.SkinsPanelLayout;
+  const singleOffers = storeFront.data.SkinsPanelLayout.SingleItemOffers;
+
+  const offersUntil =
+    storeFront.data.SkinsPanelLayout.SingleItemOffersRemainingDurationInSeconds;
 
   const offers = [];
-  for (const offerId of SingleItemOffers) {
+  for (const offerId of singleOffers) {
     const val = await ValoApiClient.Weapons.getSkinLevelByUuid(offerId);
     offers.push(val.data.data);
   }
 
-  res.status(200).json({ name, tag, puuid, offers });
+  const bundleOffer = storeFront.data.FeaturedBundle.Bundle;
+  const bundleUntil =
+    storeFront.data.FeaturedBundle.BundleRemainingDurationInSeconds;
+
+  const bundle = [];
+  for (const bundleOfferItem of bundleOffer.Items) {
+    const val = await ValoApiClient.Weapons.getSkinLevelByUuid(
+      bundleOfferItem.Item.ItemID
+    );
+
+    const enrichedItem = val?.data?.data;
+    if (enrichedItem) {
+      bundleOfferItem.enrichedItem = enrichedItem;
+    }
+
+    bundle.push(bundleOfferItem);
+  }
+
+  res
+    .status(200)
+    .json({ name, tag, puuid, offers, offersUntil, bundle, bundleUntil });
 };
 
 export default login;

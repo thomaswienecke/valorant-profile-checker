@@ -31,25 +31,17 @@
   border-color: #222;
 }
 
-.title a {
-  color: #0070f3;
-  text-decoration: none;
-}
-
-.title a:hover,
-.title a:focus,
-.title a:active {
-  text-decoration: underline;
-}
-
-.title {
+.title,
+.subtitle {
   margin: 0;
   line-height: 1.15;
   font-size: 4rem;
+  text-align: center;
 }
 
-.title,
-.description {
+.subtitle {
+  margin-top: 24px;
+  font-size: 2rem;
   text-align: center;
 }
 
@@ -57,6 +49,7 @@
   margin: 4rem 0;
   line-height: 1.5;
   font-size: 1.5rem;
+  text-align: center;
 }
 
 .code {
@@ -64,6 +57,7 @@
   border-radius: 5px;
   padding: 0.75rem;
   font-size: 1.1rem;
+  text-align: center;
   font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
     Bitstream Vera Sans Mono, Courier New, monospace;
 }
@@ -71,6 +65,7 @@
 .grid {
   display: grid;
   gap: 50px 50px;
+  margin: 20px;
   grid-template-columns: 1fr 1fr;
   align-items: center;
   justify-content: center;
@@ -78,6 +73,7 @@
 }
 
 .card_title {
+  height: 15%;
   text-align: center;
   margin: 12px;
   margin-bottom: 24px;
@@ -85,12 +81,13 @@
 }
 
 .card_image {
+  height: calc(75% - 36px);
+  width: 100%;
   position: "relative";
   /* border: 1px solid #eaeaea; */
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 24px;
 }
 
 .card, 
@@ -101,7 +98,7 @@
   border-radius: 10px;
   transition: color 0.15s ease, border-color 0.15s ease;
   height: 300px;
-  max-width: 500px;
+  width: 500px;
 
   border-color: #222;
 }

@@ -5,10 +5,11 @@ import { useUser } from "../context/user";
 import styles from "../styles/Profile.module.css";
 import ModalVideo from "react-modal-video";
 import { useRouter } from "next/router";
+import { formatRelative, addSeconds } from "date-fns";
 
-function Home(/*{ user, error }*/) {
+function Home({ user: testUser, error }) {
   const [videoModal, setVideoModal] = React.useState(null);
-  const { user } = useUser();
+  const user = useUser()?.user || testUser;
   const router = useRouter();
 
   useEffect(() => {
@@ -20,6 +21,9 @@ function Home(/*{ user, error }*/) {
   console.log("user: ", user);
 
   const offers = user?.offers || [];
+  const offersUntil = user?.offersUntil || [];
+  const bundle = user?.bundle || [];
+  const bundleUntil = user?.bundleUntil || [];
 
   return (
     <div className={styles.container}>
@@ -48,6 +52,13 @@ function Home(/*{ user, error }*/) {
           </p>
         )}
 
+        <div className={styles.subtitle}>
+          Daily Offers until{" "}
+          <div className={styles.code} style={{ marginTop: "12px" }}>
+            {formatRelative(addSeconds(new Date(), offersUntil), new Date())}
+          </div>
+        </div>
+
         <div className={styles.grid}>
           {offers.map((offer) => (
             <a
@@ -61,17 +72,54 @@ function Home(/*{ user, error }*/) {
               }}
             >
               <div className={styles.card_title}>{offer.displayName}</div>
-              <div className={styles.card_image}>
-                <picture>
-                  <img
-                    src={offer.displayIcon}
-                    alt={offer.displayName}
-                    style={{ maxWidth: "100%" }}
-                  />
-                </picture>
-              </div>
+              <div
+                className={styles.card_image}
+                style={{
+                  background: `url('${offer?.displayIcon}') no-repeat`,
+                  backgroundSize: "contain",
+                  backgroundPosition: "center",
+                }}
+              />
             </a>
           ))}
+        </div>
+
+        <div className={styles.subtitle}>
+          Bundle until{" "}
+          <div className={styles.code} style={{ marginTop: "12px" }}>
+            {formatRelative(addSeconds(new Date(), bundleUntil), new Date())}
+          </div>
+        </div>
+
+        <div className={styles.grid}>
+          {bundle
+            .filter((offer) => offer.enrichedItem)
+            .map((offer) => (
+              <a
+                className={
+                  offer.enrichedItem?.streamedVideo
+                    ? styles.cardclickable
+                    : styles.card
+                }
+                key={offer.enrichedItem?.displayName}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setVideoModal(offer.enrichedItem?.streamedVideo);
+                }}
+              >
+                <div className={styles.card_title}>
+                  {offer.enrichedItem?.displayName}
+                </div>
+                <div
+                  className={styles.card_image}
+                  style={{
+                    background: `url('${offer.enrichedItem?.displayIcon}') no-repeat`,
+                    backgroundSize: "contain",
+                    backgroundPosition: "center",
+                  }}
+                />
+              </a>
+            ))}
         </div>
       </main>
 
@@ -91,11 +139,9 @@ function Home(/*{ user, error }*/) {
 // export async function getServerSideProps(context) {
 //   try {
 //     const { data: user } = await axios.post("http://localhost:3000/api/login", {
-//       username: "-------",
-//       password: "-------",
+//       username: "Baba36I",
+//       password: "kvywE9N-7CLU7cN",
 //     });
-
-//     console.log("Dataaaaa: ", user);
 
 //     return {
 //       props: {
