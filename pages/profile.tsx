@@ -1,4 +1,3 @@
-import axios from "axios";
 import Head from "next/head";
 import React, { useEffect } from "react";
 import { useUser } from "../context/user";
@@ -7,18 +6,32 @@ import ModalVideo from "react-modal-video";
 import { useRouter } from "next/router";
 import { formatRelative, addSeconds } from "date-fns";
 
-function Home({ user: testUser, error }) {
+function Home() {
   const [videoModal, setVideoModal] = React.useState(null);
-  const user = useUser()?.user || testUser;
+  const [user, setUser] = React.useState(null);
   const router = useRouter();
+  const loggedInUser = useUser()?.user;
+  const serializedUserParam = router.query.serializedUserParam as string;
 
   useEffect(() => {
-    if (!user) {
-      router.push("/");
+    if (serializedUserParam) {
+      let buff =
+        serializedUserParam && new Buffer(serializedUserParam, "base64");
+      let deserializedUserParam;
+      let decodedserializedUserParam = buff.toString("ascii");
+      deserializedUserParam = JSON.parse(decodedserializedUserParam);
+      setUser(deserializedUserParam);
+      return;
     }
-  }, [user]);
 
-  console.log("user: ", user);
+    if (loggedInUser) {
+      setUser(loggedInUser);
+      return;
+    }
+  }, [loggedInUser, serializedUserParam]);
+
+  let buff = new Buffer(JSON.stringify(user));
+  let serializedUser = buff.toString("base64");
 
   const offers = user?.offers || [];
   const offersUntil = user?.offersUntil || [];
@@ -47,9 +60,25 @@ function Home({ user: testUser, error }) {
         <h1 className={styles.title}>Valorant Profile</h1>
 
         {user?.name && (
-          <p className={styles.code}>
-            {user.name}#{user.tag}
-          </p>
+          <div style={{ display: "flex" }}>
+            <p className={styles.code}>
+              {user.name}#{user.tag}
+            </p>
+            <button
+              className={styles.sharebutton}
+              onClick={() => {
+                navigator.clipboard.writeText(
+                  `${window.location.origin}/profile?serializedUserParam=${serializedUser}`
+                );
+                window.open(
+                  `/profile?serializedUserParam=${serializedUser}`,
+                  "_blank"
+                );
+              }}
+            >
+              Share
+            </button>
+          </div>
         )}
 
         <div className={styles.subtitle}>
@@ -135,27 +164,5 @@ function Home({ user: testUser, error }) {
     </div>
   );
 }
-
-// export async function getServerSideProps(context) {
-//   try {
-//     const { data: user } = await axios.post("http://localhost:3000/api/login", {
-//       username: "Baba36I",
-//       password: "kvywE9N-7CLU7cN",
-//     });
-
-//     return {
-//       props: {
-//         user,
-//       },
-//     };
-//   } catch (error) {
-//     console.log("getServerSideProps-error: ", error.message);
-//     return {
-//       props: {
-//         error: error.message,
-//       },
-//     };
-//   }
-// }
 
 export default Home;
