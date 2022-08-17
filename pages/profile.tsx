@@ -70,10 +70,10 @@ function Home() {
                 navigator.clipboard.writeText(
                   `${window.location.origin}/profile?serializedUserParam=${serializedUser}`
                 );
-                window.open(
-                  `/profile?serializedUserParam=${serializedUser}`,
-                  "_blank"
-                );
+                // window.open(
+                //   `/profile?serializedUserParam=${serializedUser}`,
+                //   "_blank"
+                // );
               }}
             >
               Share
