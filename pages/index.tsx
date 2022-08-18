@@ -1,15 +1,13 @@
 import axios from "axios";
 import Head from "next/head";
-import Router from "next/router";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { useUser } from "../context/user";
 import styles from "../styles/Home.module.css";
 
 export default function Home() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-
-  const { setUser } = useUser();
+  const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -18,22 +16,15 @@ export default function Home() {
     const username = e.target.username.value;
     const password = e.target.password.value;
 
-    const { data } = await axios.post(
+    const response = await axios.post(
       "/api/login",
       { username, password },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+      { maxRedirects: 0 }
     );
 
-    if (!data?.error) {
-      setUser(data);
-      Router.push("/profile");
-    } else {
-      setError(data.error);
-    }
+    response?.request?.responseURL &&
+      router.push(response?.request?.responseURL);
+
     setLoading(false);
   };
 

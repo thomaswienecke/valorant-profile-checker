@@ -1,42 +1,31 @@
 import Head from "next/head";
 import React, { useEffect } from "react";
-import { useUser } from "../context/user";
 import styles from "../styles/Profile.module.css";
 import ModalVideo from "react-modal-video";
 import { useRouter } from "next/router";
 import { formatRelative, addSeconds } from "date-fns";
+import axios from "axios";
+import { GetServerSidePropsContext } from "next";
+import getConfig from "next/config";
+const { publicRuntimeConfig } = getConfig();
 
-function Home() {
+function Home({ user }) {
   const [videoModal, setVideoModal] = React.useState(null);
-  const [user, setUser] = React.useState(null);
   const router = useRouter();
-  const loggedInUser = useUser()?.user;
-  const serializedUserParam = router.query.serializedUserParam as string;
 
   useEffect(() => {
-    if (serializedUserParam) {
-      let buff =
-        serializedUserParam && new Buffer(serializedUserParam, "base64");
-      let deserializedUserParam;
-      let decodedserializedUserParam = buff.toString("ascii");
-      deserializedUserParam = JSON.parse(decodedserializedUserParam);
-      setUser(deserializedUserParam);
+    if (!user) {
+      router.push("/");
       return;
     }
-
-    if (loggedInUser) {
-      setUser(loggedInUser);
-      return;
-    }
-  }, [loggedInUser, serializedUserParam]);
-
-  let buff = new Buffer(JSON.stringify(user));
-  let serializedUser = buff.toString("base64");
+  }, [user]);
 
   const offers = user?.offers || [];
-  const offersUntil = user?.offersUntil || [];
+  const offersUntil = user?.offersUntil || 0;
   const bundle = user?.bundle || [];
-  const bundleUntil = user?.bundleUntil || [];
+  const bundleUntil = user?.bundleUntil || 0;
+
+  const sharedUserKey = user?.shareKey;
 
   return (
     <div className={styles.container}>
@@ -68,12 +57,8 @@ function Home() {
               className={styles.sharebutton}
               onClick={() => {
                 navigator.clipboard.writeText(
-                  `${window.location.origin}/profile?serializedUserParam=${serializedUser}`
+                  `${window.location.origin}/profile?sharedUserKey=${sharedUserKey}`
                 );
-                // window.open(
-                //   `/profile?serializedUserParam=${serializedUser}`,
-                //   "_blank"
-                // );
               }}
             >
               Share
@@ -164,5 +149,25 @@ function Home() {
     </div>
   );
 }
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const { sharedUserKey } = ctx.query;
+
+  const { data } = await axios.get(
+    `${publicRuntimeConfig?.BASE_URL}/api/fetchSharedData`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      params: { sharedUserKey },
+    }
+  );
+
+  return {
+    props: {
+      user: data,
+    },
+  };
+};
 
 export default Home;

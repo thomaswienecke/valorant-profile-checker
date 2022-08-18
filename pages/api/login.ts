@@ -1,8 +1,12 @@
 import { Client } from "@valapi/web-client";
 import { Client as ValoAPI } from "@valapi/valorant-api.com";
-import { NextApiRequest } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
+import { v4 as uuid } from "uuid";
+import getConfig from "next/config";
+const { serverRuntimeConfig } = getConfig();
+const userDataCache = serverRuntimeConfig?.cache;
 
-const login = async (req: NextApiRequest, res) => {
+const login = async (req: NextApiRequest, res: NextApiResponse) => {
   const { username, password } = req.body;
 
   const AuthClient = new Client();
@@ -19,10 +23,9 @@ const login = async (req: NextApiRequest, res) => {
   const storeFront = await AuthClient.Store.GetStorefront(puuid);
 
   if (storeFront.data.errorCode === "SCHEDULED_DOWNTIME") {
-    res.status(500).json({
+    return res.status(500).json({
       error: "SCHEDULED_DOWNTIME",
     });
-    return;
   }
 
   const singleOffers = storeFront.data.SkinsPanelLayout.SingleItemOffers;
@@ -54,9 +57,22 @@ const login = async (req: NextApiRequest, res) => {
     bundle.push(bundleOfferItem);
   }
 
-  res
-    .status(200)
-    .json({ name, tag, puuid, offers, offersUntil, bundle, bundleUntil });
+  const shareKey = `${name}_${tag}_${uuid()}`;
+
+  const user = {
+    name,
+    tag,
+    puuid,
+    shareKey,
+    offers,
+    offersUntil,
+    bundle,
+    bundleUntil,
+  };
+
+  await userDataCache.set(shareKey, user, offersUntil);
+
+  return res.status(200).redirect(`/profile?sharedUserKey=${shareKey}`);
 };
 
 export default login;
