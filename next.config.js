@@ -10,7 +10,7 @@ const nextConfig = {
   },
   publicRuntimeConfig: {
     NODE_ENV: process.env.NODE_ENV,
-    REDIS_URL: process.env.NODE_ENV === 'production' ? 'redis://redis:6379' : 'redis://localhost:6379',
+    REDIS_URL: process.env.NODE_ENV === 'production' ? 'redis://valorant-redis:6379' : 'redis://localhost:6379',
     BASE_URL: process.env.NODE_ENV === 'production' ? 'https://valorant.thomasdissert.com' : 'http://localhost:3000',
   }
 
