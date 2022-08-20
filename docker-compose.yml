@@ -12,6 +12,6 @@ services:
     container_name: valorant-redis
     network_mode: bridge
     ports:
-      - '6379:6379'
+      - '46379:6379'
     restart: unless-stopped
   
