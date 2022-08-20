@@ -1,12 +1,10 @@
 import { Client } from "@valapi/web-client";
 import { Client as ValoAPI } from "@valapi/valorant-api.com";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiResponse } from "next";
 import { v4 as uuid } from "uuid";
-import getConfig from "next/config";
-const { serverRuntimeConfig } = getConfig();
-const userDataCache = serverRuntimeConfig?.cache;
+import { getRedisClient } from "../../lib/redis";
 
-const login = async (req: NextApiRequest, res: NextApiResponse) => {
+const login = async (req: any, res: NextApiResponse) => {
   const { username, password } = req.body;
 
   const AuthClient = new Client();
@@ -70,7 +68,9 @@ const login = async (req: NextApiRequest, res: NextApiResponse) => {
     bundleUntil,
   };
 
-  await userDataCache.set(shareKey, user, offersUntil);
+  const serializedUser = JSON.stringify(user);
+
+  await (await getRedisClient()).set(shareKey, serializedUser, offersUntil);
 
   return res.status(200).redirect(`/profile?sharedUserKey=${shareKey}`);
 };

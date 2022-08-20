@@ -1,10 +1,6 @@
-import { NextApiRequest } from "next";
-import getConfig from "next/config";
+import { getRedisClient } from "../../lib/redis";
 
-const { serverRuntimeConfig } = getConfig();
-const userDataCache = serverRuntimeConfig?.cache;
-
-const fetchSharedData = async (req: NextApiRequest, res) => {
+const fetchSharedData = async (req, res) => {
   const sharedUserKey = req.query.sharedUserKey as string;
 
   if (!sharedUserKey) {
@@ -13,7 +9,7 @@ const fetchSharedData = async (req: NextApiRequest, res) => {
     });
   }
 
-  const cachedUser = await userDataCache.get(sharedUserKey);
+  const cachedUser = await (await getRedisClient()).get(sharedUserKey);
 
   if (!cachedUser) {
     return res.status(500).json({
@@ -21,7 +17,9 @@ const fetchSharedData = async (req: NextApiRequest, res) => {
     });
   }
 
-  return res.status(200).json(cachedUser);
+  const deserializedCachedUser = JSON.parse(cachedUser);
+
+  return res.status(200).json(deserializedCachedUser);
 };
 
 export default fetchSharedData;

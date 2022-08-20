@@ -1,4 +1,3 @@
-const NodeCache = require('node-cache');
 
 console.log("Starting next.config.js with NODE_ENV: ", process.env.NODE_ENV);
 
@@ -9,10 +8,9 @@ const nextConfig = {
   images: {
     domains: ['media.valorant-api.com'],
   },
-  serverRuntimeConfig: {
-    cache: new NodeCache({ stdTTL: 86400 })
-  },
   publicRuntimeConfig: {
+    NODE_ENV: process.env.NODE_ENV,
+    REDIS_URL: process.env.NODE_ENV === 'production' ? 'redis://redis:6379' : 'redis://localhost:6379',
     BASE_URL: process.env.NODE_ENV === 'production' ? 'https://valorant.thomasdissert.com' : 'http://localhost:3000',
   }
 
