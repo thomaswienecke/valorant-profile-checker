@@ -153,6 +153,8 @@ function Home({ user }) {
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { sharedUserKey } = ctx.query;
 
+  console.log("BASE_URL: ", publicRuntimeConfig?.BASE_URL);
+
   const { data } = await axios.get(
     `${publicRuntimeConfig?.BASE_URL}/api/fetchSharedData`,
     {
