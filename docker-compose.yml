@@ -3,18 +3,21 @@ services:
   valorant-app:
     image: ghcr.io/thomasdissert/valorant-profile-checker:main
     container_name: valorant-app
-    network_mode: bridge
+    networks:
+      - valorant-network
     ports:
       - 12001:3000/tcp
     restart: unless-stopped
     environment:
-      - REDIS_URL=redis://valorant-redis:46379
+      - REDIS_URL=redis://valorant-redis:6379
       - BASE_URL=https://valorant.thomasdissert.com
   valorant-redis:
     image: redis:6.2-alpine
     container_name: valorant-redis
-    network_mode: bridge
-    ports:
-      - '46379:6379'
+    networks:
+      - valorant-network
     restart: unless-stopped
-  
+    
+networks:
+  valorant-network:
+    driver: bridge
