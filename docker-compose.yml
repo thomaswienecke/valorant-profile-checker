@@ -10,7 +10,7 @@ services:
     restart: unless-stopped
     environment:
       - REDIS_URL=redis://valorant-redis:6379
-      - BASE_URL=https://valorant.thomasdissert.com
+      - BASE_URL=http://localhost:3000
   valorant-redis:
     image: redis:6.2-alpine
     container_name: valorant-redis
