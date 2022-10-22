@@ -3,11 +3,8 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import styles from "../styles/Home.module.css";
-import getConfig from "next/config";
-const { publicRuntimeConfig } = getConfig();
 
 export default function Home() {
-  console.log("NODE_ENV: ", publicRuntimeConfig.NODE_ENV);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();

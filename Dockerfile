@@ -34,6 +34,9 @@ RUN yarn build
 FROM node:16-alpine AS runner
 WORKDIR /app
 
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
 ENV NODE_ENV production
 # Uncomment the following line in case you want to disable telemetry during runtime.
 # ENV NEXT_TELEMETRY_DISABLED 1
@@ -42,7 +45,6 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # You only need to copy next.config.js if you are NOT using the default configuration
-COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
 
@@ -58,4 +60,4 @@ EXPOSE 3000
 ENV PORT 3000
 ENV NODE_ENV production
 
-CMD ["node", "server.js"]
+CMD ["yarn", "start"]

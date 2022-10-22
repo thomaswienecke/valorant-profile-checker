@@ -8,11 +8,11 @@ const nextConfig = {
   images: {
     domains: ['media.valorant-api.com'],
   },
-  publicRuntimeConfig: {
+  serverRuntimeConfig: {
     NODE_ENV: process.env.NODE_ENV,
-    REDIS_URL: process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_REDIS_URL : 'redis://localhost:6379',
-    BASE_URL: process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_BASE_URL : 'http://localhost:3000',
-  }
+    REDIS_URL: process.env.REDIS_URL,
+    BASE_URL: process.env.BASE_URL,
+  },
 
 }
 

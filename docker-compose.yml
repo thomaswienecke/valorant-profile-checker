@@ -8,8 +8,8 @@ services:
       - 12001:3000/tcp
     restart: unless-stopped
     environment:
-      - NEXT_PUBLIC_REDIS_URL=redis://valorant-redis:46379
-      - NEXT_PUBLIC_BASE_URL=https://valorant.thomasdissert.com
+      - REDIS_URL=redis://valorant-redis:46379
+      - BASE_URL=https://valorant.thomasdissert.com
   valorant-redis:
     image: redis:6.2-alpine
     container_name: valorant-redis

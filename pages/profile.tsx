@@ -7,7 +7,7 @@ import { formatRelative, addSeconds } from "date-fns";
 import axios from "axios";
 import { GetServerSidePropsContext } from "next";
 import getConfig from "next/config";
-const { publicRuntimeConfig } = getConfig();
+const { serverRuntimeConfig } = getConfig();
 
 function Home({ user }) {
   const [videoModal, setVideoModal] = React.useState(null);
@@ -153,10 +153,8 @@ function Home({ user }) {
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   const { sharedUserKey } = ctx.query;
 
-  console.log("BASE_URL: ", publicRuntimeConfig?.BASE_URL);
-
   const { data } = await axios.get(
-    `${publicRuntimeConfig?.BASE_URL}/api/fetchSharedData`,
+    `${serverRuntimeConfig?.BASE_URL}/api/fetchSharedData`,
     {
       headers: {
         "Content-Type": "application/json",
