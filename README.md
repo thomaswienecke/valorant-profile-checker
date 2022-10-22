@@ -20,6 +20,10 @@ REDIS_URL=redis://localhost:6379
 BASE_URL=http://localhost:3000
 ```
 
+##  CI
+
+A runtime agnostic docker image is generated using Github Actions. You can run it using the provided docker-compose file (change the REDIS_URL and BASE_URL if necessary).
+
 ## Deployment
 
 It is currently deployed in my homelab running on a docker container. You can find the dockerfile and docker-compose.yml in the repository.
