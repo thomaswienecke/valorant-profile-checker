@@ -1,12 +1,12 @@
 # Valorant Checker
 
-This is a web application to gather information about your daily Valorant store. You can visit the demo at https://valorant.thomasdissert.com/
+This is a web application to gather information about your daily Valorant store. You can visit the demo at https://valorant.thomaswienecke.com/
 
 ## Installation
 
 ### Requirements
 
-You need a local redis server running on your machine. You can install it with the following command:
+You need a local redis server running on your machine. Depending on your os you can install it with the following command:
 
 ```bash
 sudo apt install redis-server
@@ -26,4 +26,6 @@ A runtime agnostic docker image is generated using Github Actions. You can run i
 
 ## Deployment
 
-It is currently deployed in my homelab running on a docker container. You can find the dockerfile and docker-compose.yml in the repository.
+It is currently deployed on fly.io. You can check out the `fly.toml` for configuration details.
+
+You can find the dockerfile and docker-compose.yml in the repository.
